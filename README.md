@@ -166,12 +166,7 @@ The **Classifier** module is responsible for analyzing the content of extracted 
 ---
 
 ### 📊 **Example Output**
-#### Input Text (example from a README file):
-```
-The development team is composed of engineers from different countries. They have worked closely with beta testers to refine the software.
-```
 
-#### Output JSON:
 ```json
 {
   "development_team": {
