@@ -1,8 +1,29 @@
+"""
+GitHub Root Files Downloader
+=============================
+
+Description:
+------------
+This script automates the process of downloading specific root-level files 
+(e.g., README, CONTRIBUTING, CODE_OF_CONDUCT) from GitHub repositories. It 
+fetches files based on a predefined list of target patterns, organizes them 
+by programming language, and stores the results locally.
+
+Key Features:
+-------------
+1. **Target File Matching**: Downloads files matching specific patterns (e.g., "readme", "code_of_conduct").
+2. **Language-based Organization**: Stores files in directories grouped by repository programming language.
+3. **Error Handling and Logging**: Captures process details and errors in a log file for troubleshooting.
+4. **Configuration via External Files**:
+   - `config.py`: Contains global settings (e.g., API token, target patterns, output directory).
+   - `repositories.json`: Specifies repositories to process, including owner, name, and language.
+"""
+
 import os
 import json
 import requests
 from datetime import datetime
-from config import BASE_OUTPUT_DIR, TARGET_FILES, HEADERS  # Import configurations
+from config import BASE_OUTPUT_DIR, TARGET_FILES, HEADERS  
 
 # Logging
 def log_message(message):
@@ -79,7 +100,7 @@ def process_repositories(config):
 # Main Script
 if __name__ == "__main__":
     # Load configuration from file
-    config_file = "config.json"
+    config_file = "repositories.json"
     with open(config_file, "r") as file:
         config = json.load(file)
 
