@@ -1,0 +1,14 @@
+{
+  "repos": [
+    {
+      "owner": "OWNER_NAME",
+      "name": "REPO_NAME",
+      "language": "LANGUAGE"
+    },
+    {
+      "owner": "OWNER_NAME",
+      "name": "REPO_NAME",
+      "language": "LANGUAGE"
+    }
+  ]
+}
