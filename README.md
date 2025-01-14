@@ -1,40 +1,225 @@
-# template
+# Diversity Card Analyzer
 
-This is a template for future repositories born in the SOM GitHub organization.
-It offers a collection of files and repository configuration for kick-starting a new project under the SOM GitHub organization.
+## 📋 **Overview**
+This project provides a complete solution for analyzing and classifying root-level files (e.g., `README`, `CONTRIBUTING`, `CODE_OF_CONDUCT`) from a list of GitHub repositories. The tool is designed to automate the process of:
+1. Extracting and organizing relevant files from repositories.
+2. Performing detailed analysis of the extracted content using predefined prompts and advanced language models.
 
-This repository does not have activated the use of issues, projects o wikis. Only Pull Requests are allowed.
+The tool is particularly useful for understanding various aspects of open-source projects, such as their governance, non-coding contributions, and adaptations for specific user groups.
 
-> If you have **any** question, contact [Javier Cánovas](https://github.com/jlcanovas) via the SOM Slack app.
+---
 
-## Steps to customize this repo for your project
+## ✨ **Key Features**
+1. **Repository Extraction**:
+   - Automatically fetches specified root-level files from GitHub repositories.
+   - Organizes the data by programming language for easier processing.
+   - Allows filtering based on predefined patterns (e.g., `README`, `CODE_OF_CONDUCT`).
 
-1. Create a new repository in the SOM GitHub organization using this template. You have to set the `Repository template` field to `SOM-Research/template`.
+2. **Text Classification**:
+   - Performs in-depth analysis of text files using a classification pipeline.
+   - Utilizes prompts for specific dimensions, such as governance, user testing, and non-coding contributors.
+   - Outputs structured JSON results for easy interpretation.
 
-    ![Repositoy Template](images/repositoryTemplate.png)
+3. **Modular Design**:
+   - **Extractor**: Responsible for fetching and organizing repository data.
+   - **Classifier**: Processes extracted files and applies structured prompts to analyze content.
 
-2. Edit the project description. You can do it in the `About` tab of the repository (click on the gear icon). Try to create a descriptive entry for the project, and include at least three tags. If the project has a website, indicate also the URL.
+5. **Logging and Validation**:
+   - Comprehensive logging ensures that all processes are tracked for debugging and validation.
+   - Includes functionality for random file sampling during validation phases.
 
-    ![Project Description](images/about.png)
+---
 
-3. In the preovious menu, decide also whether your repository page should include `Releases`, `Packages` or `Environments` tabs. In case of doubt, remove them
+## 🔍 **Extractor**
 
-4. Review the contributing guidelines in `CONTIBUTING.md`. Please, read carefully the provided template and adapt to your repository.
+### 📖 **Overview**
+The **Extractor** module is responsible for retrieving specific root-level files from GitHub repositories. These files, such as `README`, `CONTRIBUTING`, or `CODE_OF_CONDUCT`, provide valuable insights into the structure, guidelines, and governance of open-source projects. The extracted files are organized by programming language and stored locally for further analysis.
 
-5. Review the code of conduct in `CODE_OF_CONDUCT.md`. Please, read carefully the provided template and adapt to your repository.
+---
 
-6. Review the governance model in `GOVERNANCE.md`. Please, read carefully the provided template and adapt to your repository.
+### ⚙️ **How It Works**
+1. **Configuration**:
+   - The `repositories.json` file contains a list of repositories to process, specifying the repository owner, name, and primary programming language.
+   - The `config.py` file defines global settings, including the output directory, target file patterns, and GitHub API token.
 
-7. Check that the proposed license matches with your project. The template includes the CC-BY-SA license, but you can change it to any other license. You can find a list of licenses in [Choose a License](https://choosealicense.com/).
+2. **Target File Matching**:
+   - The extractor identifies files in the root directory of a repository that match a predefined list of patterns (e.g., `readme`, `code_of_conduct`).
+   - Files are downloaded only if they meet these criteria.
 
-8. Decide whether your project will use issues, projects, and wikis. You can de/activate them in the `Settings` tab of the repository.
+3. **Data Organization**:
+   - Extracted files are stored in a directory structure organized by programming language (`data/root_files/<language>`).
+   - Each repository's files are combined into a single text file for easy processing (`<owner>_<repo>.txt`).
 
-9. Review the templates proposed for issues and pull requests. You can find them in the `.github` folder. Remove the folder if you do not plan to use them. 
+4. **Logging**:
+   - Logs are maintained in `data/root_files/process_log.txt` to track the extraction process, including any errors or skipped files.
 
-    9.1. Issue templates are located in `.github/ISSUE_TEMPLATE`. You can find a template for proposals and questions, but you can modify or create new ones. You can find more information in [About issue and pull request templates](https://help.github.com/en/github/building-a-strong-community/about-issue-and-pull-request-templates). 
+---
 
-    9.2. Pull request template is located in `.github`. You can find more information in [About issue and pull request templates](https://help.github.com/en/github/building-a-strong-community/about-issue-and-pull-request-templates).
+### 📂 **Key Files**
+- **`extractor_repos.py`**: The main script for extracting repository files.
+- **`config.py`**: Contains the configuration for the extractor, including API headers and file patterns.
+- **`repositories.json`**: Defines the list of repositories to process.
 
-10. If your work is related to a paper, and you want to facilitate its citation, review the `CITATION.cff` file. The provided template will help to fill the gaps, but if you need more help, you can find more information in [Citation File Format](https://citation-file-format.github.io/). Otherwise, just remove the file.
+---
 
-11. Modify the `README.md` file. Once you have done the previous steps, write your the README file for your project. 
+### 🛠️ **Usage Instructions**
+1. **Prepare Configuration**:
+   - Ensure your GitHub API token is set in the `.env` file as `DIVERSITY_CARD`.
+   - Define the list of repositories in `repositories.json` with the following structure:
+     ```json
+     {
+       "repos": [
+         { "owner": "OWNER_NAME", "name": "REPO_NAME", "language": "LANGUAGE" },
+         { "owner": "OWNER_NAME", "name": "REPO_NAME", "language": "LANGUAGE" }
+       ]
+     }
+     ```
+
+2. **Run the Extractor**:
+   Execute the extractor script to fetch and organize the repository files:
+   ```bash
+   python src/extractor/extractor_repos.py
+   ```
+
+3. **Output**:
+   - Extracted files are stored in the `data/root_files/<language>` directory.
+   - Check `data/root_files/process_log.txt` for logs of the extraction process.
+
+---
+
+### 📊 **Example Log Output**
+```
+2025-01-14 12:00:00 - Processing repository: microsoft/PowerToys (Language: C#)
+2025-01-14 12:00:01 - Added README.md to data/root_files/c#/microsoft_PowerToys.txt
+2025-01-14 12:00:02 - Skipping contributing.md in microsoft/PowerToys. Not a target file.
+2025-01-14 12:00:03 - Processing repository: facebook/react (Language: JavaScript)
+2025-01-14 12:00:04 - Added CODE_OF_CONDUCT.md to data/root_files/javascript/facebook_react.txt
+```
+
+---
+
+### 🚫 **Error Handling**
+- If a file cannot be fetched, an error message is logged, and the process continues with the next file.
+- Examples of logged errors:
+  ```
+  Failed to fetch root files for microsoft/PowerToys. Status: 404, Response: Not Found
+  Error downloading README.md from facebook/react: Connection timed out
+  ```
+
+The extractor ensures robustness by handling individual file errors without interrupting the overall process.
+
+---
+
+### 🌟 **Key Benefits**
+- Automates the retrieval of essential files across multiple repositories.
+- Organizes data efficiently for downstream classification.
+- Provides detailed logs for traceability and debugging.
+
+## 🔍 **Classifier**
+
+### 📖 **Overview**
+The **Classifier** module is responsible for analyzing the content of extracted root files from GitHub repositories. Using advanced language models and predefined prompts, it performs a structured analysis of various dimensions such as governance, user testing, and non-coding contributors. The outputs are stored in JSON format, providing a clear and organized representation of the insights gained from the analysis.
+
+---
+
+### ⚙️ **How It Works**
+1. **File Selection**:
+   - Files to be analyzed are selected either randomly (during validation) or by processing all files extracted in the `root_files` directory.
+   - The classifier supports multiple programming languages and handles files organized by language folders.
+
+2. **Prompts**:
+   - The analysis is guided by predefined prompts stored in the `prompt` folder.
+   - Each prompt is designed to extract specific information from the text, such as mentions of governance participants or non-coding contributors.
+
+3. **Analysis**:
+   - The classifier processes the text of each file and applies the corresponding prompts.
+   - Outputs are generated in JSON format, with details for each analyzed dimension.
+
+4. **Output Organization**:
+   - Results are stored in the `classification` directory, organized by language.
+   - Each file's output is saved as a `.json` file named after the input file.
+
+---
+
+### 📂 **Key Files**
+- **`classifier.py`**: The main script for analyzing extracted files.
+- **`prompt/`**: Contains predefined prompts for different analysis dimensions.
+- **`config.py`**: Configuration for the classifier, including output paths and language settings.
+
+---
+
+### 🛠️ **Usage Instructions**
+1. **Prepare the Environment**:
+   - Ensure your OpenAI API key is set in the `.env` file as `OPENAI_API_KEY`.
+   - Verify that the `root_files` directory contains extracted files organized by language.
+
+2. **Run the Classifier**:
+   Execute the classifier script to analyze the extracted files:
+   ```bash
+   python src/classifier/classifier.py
+   ```
+
+3. **Output**:
+   - Results are saved in the `data/classification` directory, organized by language.
+   - Each result is stored as a JSON file corresponding to the input file name.
+
+---
+
+### 📊 **Example Output**
+#### Input Text (example from a README file):
+```
+The development team is composed of engineers from different countries. They have worked closely with beta testers to refine the software.
+```
+
+#### Output JSON:
+```json
+{
+  "development_team": {
+    "mention_to_dev_team": "yes",
+    "profile_aspects": {
+      "mentioned": "yes",
+      "aspects": ["geographic diversity"]
+    }
+  },
+  "non_coding_contributors": {
+    "mention_non_coding_contributors": "no",
+    "non_coding_roles": {
+      "explained": "no",
+      "roles": []
+    }
+  },
+  "tests_with_potential_users": {
+    "mention_tests_with_users": "yes",
+    "mention_labor_force": "no",
+    "mention_reporting_platforms": "no"
+  },
+  "deployment_context": {
+    "mention_specific_use_case": "no",
+    "mention_target_population": "no",
+    "mention_specific_adaptation": "no"
+  },
+  "governance_participants": {
+    "mention_governance_participants": "no",
+    "mention_funders": "no"
+  }
+}
+```
+
+---
+
+### 🛑 **Error Handling**
+- If an error occurs during analysis (e.g., invalid API response), it is logged, and the process continues with the next file.
+- Examples of errors:
+  ```
+  Error processing development_team for file data/root_files/python/repo1.txt: Connection timeout
+  ```
+- Skipped files are also logged for traceability.
+
+---
+
+### 🌟 **Key Benefits**
+- Provides a structured analysis of open-source project files.
+- Uses advanced language models for nuanced insights.
+- Outputs JSON files, making it easy to integrate with other systems or dashboards.
+
+---
