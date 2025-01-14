@@ -35,7 +35,7 @@ The tool is particularly useful for understanding various aspects of open-source
 ### 📖 **Overview**
 The **Extractor** module is responsible for retrieving specific root-level files from GitHub repositories. These files, such as `README`, `CONTRIBUTING`, or `CODE_OF_CONDUCT`, provide valuable insights into the structure, guidelines, and governance of open-source projects. The extracted files are organized by programming language and stored locally for further analysis.
 
----
+
 
 ### ⚙️ **How It Works**
 1. **Configuration**:
@@ -53,14 +53,14 @@ The **Extractor** module is responsible for retrieving specific root-level files
 4. **Logging**:
    - Logs are maintained in `data/root_files/process_log.txt` to track the extraction process, including any errors or skipped files.
 
----
+
 
 ### 📂 **Key Files**
 - **`extractor_repos.py`**: The main script for extracting repository files.
 - **`config.py`**: Contains the configuration for the extractor, including API headers and file patterns.
 - **`repositories.json`**: Defines the list of repositories to process.
 
----
+
 
 ### 🛠️ **Usage Instructions**
 1. **Prepare Configuration**:
@@ -85,7 +85,6 @@ The **Extractor** module is responsible for retrieving specific root-level files
    - Extracted files are stored in the `data/root_files/<language>` directory.
    - Check `data/root_files/process_log.txt` for logs of the extraction process.
 
----
 
 ### 📊 **Example Log Output**
 ```
@@ -96,7 +95,6 @@ The **Extractor** module is responsible for retrieving specific root-level files
 2025-01-14 12:00:04 - Added CODE_OF_CONDUCT.md to data/root_files/javascript/facebook_react.txt
 ```
 
----
 
 ### 🚫 **Error Handling**
 - If a file cannot be fetched, an error message is logged, and the process continues with the next file.
@@ -108,19 +106,17 @@ The **Extractor** module is responsible for retrieving specific root-level files
 
 The extractor ensures robustness by handling individual file errors without interrupting the overall process.
 
----
-
 ### 🌟 **Key Benefits**
 - Automates the retrieval of essential files across multiple repositories.
 - Organizes data efficiently for downstream classification.
 - Provides detailed logs for traceability and debugging.
 
+--- 
 ## 🔍 **Classifier**
 
 ### 📖 **Overview**
 The **Classifier** module is responsible for analyzing the content of extracted root files from GitHub repositories. Using advanced language models and predefined prompts, it performs a structured analysis of various dimensions such as governance, user testing, and non-coding contributors. The outputs are stored in JSON format, providing a clear and organized representation of the insights gained from the analysis.
 
----
 
 ### ⚙️ **How It Works**
 1. **File Selection**:
@@ -139,14 +135,14 @@ The **Classifier** module is responsible for analyzing the content of extracted 
    - Results are stored in the `classification` directory, organized by language.
    - Each file's output is saved as a `.json` file named after the input file.
 
----
+
 
 ### 📂 **Key Files**
 - **`classifier.py`**: The main script for analyzing extracted files.
 - **`prompt/`**: Contains predefined prompts for different analysis dimensions.
 - **`config.py`**: Configuration for the classifier, including output paths and language settings.
 
----
+
 
 ### 🛠️ **Usage Instructions**
 1. **Prepare the Environment**:
@@ -163,7 +159,7 @@ The **Classifier** module is responsible for analyzing the content of extracted 
    - Results are saved in the `data/classification` directory, organized by language.
    - Each result is stored as a JSON file corresponding to the input file name.
 
----
+
 
 ### 📊 **Example Output**
 
@@ -200,7 +196,7 @@ The **Classifier** module is responsible for analyzing the content of extracted 
 }
 ```
 
----
+
 
 ### 🛑 **Error Handling**
 - If an error occurs during analysis (e.g., invalid API response), it is logged, and the process continues with the next file.
@@ -210,7 +206,7 @@ The **Classifier** module is responsible for analyzing the content of extracted 
   ```
 - Skipped files are also logged for traceability.
 
----
+
 
 ### 🌟 **Key Benefits**
 - Provides a structured analysis of open-source project files.
