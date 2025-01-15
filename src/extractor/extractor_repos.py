@@ -23,25 +23,78 @@ import os
 import json
 import requests
 from datetime import datetime
-from config import BASE_OUTPUT_DIR, TARGET_FILES, HEADERS  
+# from config import BASE_OUTPUT_DIR, TARGET_FILES, HEADERS  
+from dotenv import load_dotenv
 
-# Logging
+# Load environment variables from the .env file
+load_dotenv(override=True)
+
+# GitHub API token loaded from environment variables
+GITHUB_TOKEN = os.getenv("DIVERSITY_CARD")
+if not GITHUB_TOKEN:
+    raise EnvironmentError(
+        "The environment variable 'DIVERSITY_CARD' is not set or is empty. "
+        "Please configure it in the .env file before running the script."
+    )
+
+# Base directory for storing output files
+BASE_OUTPUT_DIR = 'data/root_files'
+
+# List of file patterns to match for downloading specific root files
+TARGET_FILES = [
+    "readme", "contributing", "code_of_conduct", "governance",
+    "codeowners", "community", "support", "security", "release",
+    "code-of-conduct"
+]
+
+# HTTP headers for GitHub API requests, including the authorization token
+HEADERS = {
+    "Authorization": f"Bearer {GITHUB_TOKEN}",
+    "Content-Type": "application/json"
+}
+
 def log_message(message):
-    """Write process messages to a log file."""
+    """
+    Write process messages to a log file.
+
+    Args:
+        message (str): The message to be logged.
+
+    Returns:
+        None
+    """
     os.makedirs(BASE_OUTPUT_DIR, exist_ok=True)
     log_file_path = os.path.join(BASE_OUTPUT_DIR, 'process_log.txt')
     with open(log_file_path, 'a') as log_file:
         log_file.write(f"{datetime.now()} - {message}\n")
 
-# Match target files
+
 def is_target_file(file_name):
-    """Check if a file matches the target patterns."""
+    """
+    Check if a file matches the target patterns.
+
+    Args:
+        file_name (str): The name of the file to check.
+
+    Returns:
+        bool: True if the file matches any target pattern, False otherwise.
+    """
     lower_name = file_name.lower()
     return any(lower_name.startswith(pattern) for pattern in TARGET_FILES)
 
-# Download Root Files
+
 def download_root_files(owner, repo, language):
-    """Download specific root files from a repository."""
+    """
+    Download specific root files from a repository.
+
+    Args:
+        owner (str): The GitHub username or organization that owns the repository.
+        repo (str): The name of the repository.
+        language (str): The primary programming language of the repository (used for organizing output).
+
+    Returns:
+        None
+    """
     url = f"https://api.github.com/repos/{owner}/{repo}/contents/"
     response = requests.get(url, headers=HEADERS)
 
@@ -84,9 +137,17 @@ def download_root_files(owner, repo, language):
             else:
                 log_message(f"Skipping {file_name} in {owner}/{repo}. Not a target file.")
 
-# Process Repositories
+
 def process_repositories(config):
-    """Process each repository in the provided configuration."""
+    """
+    Process each repository in the provided configuration.
+
+    Args:
+        config (dict): A dictionary containing repository information (owner, name, language).
+
+    Returns:
+        None
+    """
     for repo in config["repos"]:
         owner = repo["owner"]
         repo_name = repo["name"]
@@ -99,6 +160,9 @@ def process_repositories(config):
 
 # Main Script
 if __name__ == "__main__":
+    """
+    Main execution block for the script. Loads configuration, processes repositories, and logs the duration.
+    """
     # Load configuration from file
     config_file = "repositories.json"
     with open(config_file, "r") as file:

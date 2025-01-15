@@ -1,4 +1,29 @@
-# System definition
+"""
+Prompts for Text Analysis with OpenAI
+=====================================
+
+Description:
+------------
+This file contains a collection of system and contextual prompts designed for 
+analyzing textual data using OpenAI's language models. The prompts are tailored 
+to extract specific information from input text and return structured JSON 
+outputs for various analytical purposes.
+
+Prompts Included:
+-----------------
+1. **System Prompt**: Defines the model's role as an efficient text analysis assistant.
+2. **Development Team Prompt**: Extracts details about mentions of development teams and their profiles.
+3. **Non-Coding Prompt**: Identifies and analyzes mentions of non-coding contributors.
+4. **User Testing Prompt**: Extracts information about testing practices with users, labor force, and reporting platforms.
+5. **Deployment Context Prompt**: Identifies use cases, target populations, and adaptations for specific users.
+6. **Governance Participants Prompt**: Analyzes mentions of governance participants and project funders.
+
+Usage:
+------
+These prompts are dynamically incorporated into API calls to OpenAI's models, 
+enabling consistent and precise text analysis tailored to each context.
+"""
+
 SYSTEM_PROMPT = """
 You are the most capable and efficient assistant, excelling in analyzing text accurately and providing structured outputs in JSON format.
 """
@@ -270,7 +295,7 @@ Examples:
 """
 
 
-GOVERNANCE_AND_FUNDERS_PROMPT = """
+GOVERNANCE_PARTICIPANTS_PROMPT = """
 Analyze the following text and respond in JSON format:
 
 1. Does the documentation mention governance participants, either as individuals or as part of an organization? (yes/no)
