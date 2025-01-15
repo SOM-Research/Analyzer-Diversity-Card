@@ -94,16 +94,6 @@ The **Extractor** module is responsible for retrieving specific root-level files
 2025-01-14 12:00:03 - Processing repository: facebook/react (Language: JavaScript)
 2025-01-14 12:00:04 - Added CODE_OF_CONDUCT.md to data/root_files/javascript/facebook_react.txt
 ```
-
-
-### 🚫 **Error Handling**
-- If a file cannot be fetched, an error message is logged, and the process continues with the next file.
-- Examples of logged errors:
-  ```
-  Failed to fetch root files for microsoft/PowerToys. Status: 404, Response: Not Found
-  Error downloading README.md from facebook/react: Connection timed out
-  ```
-
 The extractor ensures robustness by handling individual file errors without interrupting the overall process.
 
 ### 🌟 **Key Benefits**
@@ -139,7 +129,7 @@ The **Classifier** module is responsible for analyzing the content of extracted 
 
 ### 📂 **Key Files**
 - **`classifier.py`**: The main script for analyzing extracted files.
-- **`prompt/`**: Contains predefined prompts for different analysis dimensions.
+- **`prompt.py`**: Contains predefined prompts for different analysis dimensions.
 - **`config.py`**: Configuration for the classifier, including output paths and language settings.
 
 
@@ -195,19 +185,6 @@ The **Classifier** module is responsible for analyzing the content of extracted 
   }
 }
 ```
-
-
-
-### 🛑 **Error Handling**
-- If an error occurs during analysis (e.g., invalid API response), it is logged, and the process continues with the next file.
-- Examples of errors:
-  ```
-  Error processing development_team for file data/root_files/python/repo1.txt: Connection timeout
-  ```
-- Skipped files are also logged for traceability.
-
-
-
 ### 🌟 **Key Benefits**
 - Provides a structured analysis of open-source project files.
 - Uses advanced language models for nuanced insights.
