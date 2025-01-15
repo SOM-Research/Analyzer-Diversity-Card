@@ -23,35 +23,9 @@ import os
 import json
 import requests
 from datetime import datetime
-# from config import BASE_OUTPUT_DIR, TARGET_FILES, HEADERS  
+from config import BASE_OUTPUT_DIR, TARGET_FILES, HEADERS  
 from dotenv import load_dotenv
 
-# Load environment variables from the .env file
-load_dotenv(override=True)
-
-# GitHub API token loaded from environment variables
-GITHUB_TOKEN = os.getenv("DIVERSITY_CARD")
-if not GITHUB_TOKEN:
-    raise EnvironmentError(
-        "The environment variable 'DIVERSITY_CARD' is not set or is empty. "
-        "Please configure it in the .env file before running the script."
-    )
-
-# Base directory for storing output files
-BASE_OUTPUT_DIR = 'data/root_files'
-
-# List of file patterns to match for downloading specific root files
-TARGET_FILES = [
-    "readme", "contributing", "code_of_conduct", "governance",
-    "codeowners", "community", "support", "security", "release",
-    "code-of-conduct"
-]
-
-# HTTP headers for GitHub API requests, including the authorization token
-HEADERS = {
-    "Authorization": f"Bearer {GITHUB_TOKEN}",
-    "Content-Type": "application/json"
-}
 
 def log_message(message):
     """
