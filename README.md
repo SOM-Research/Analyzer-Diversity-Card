@@ -1,34 +1,36 @@
 # Diversity Card Analyzer
 
 ## 📋 **Overview**
-This project provides a complete solution for analyzing and classifying root-level files (e.g., `README`, `CONTRIBUTING`, `CODE_OF_CONDUCT`) from a list of GitHub repositories. The tool is designed to automate the process of:
-1. Extracting and organizing relevant files from repositories.
-2. Performing detailed analysis of the extracted content using predefined prompts and advanced language models.
+This project provides a complete solution for extracting and analyzing root-level files (e.g., `README`, `CONTRIBUTING`, `CODE_OF_CONDUCT`) from GitHub repositories. The tool is designed to:
+1. **Extract** relevant files from repositories and organize them by programming language.
+2. **Analyze** the extracted content using predefined prompts and AI-powered classification.
 
-The tool is particularly useful for understanding various aspects of open-source projects, such as their governance, non-coding contributions, and adaptations for specific user groups.
+This tool is particularly useful for understanding various aspects of open-source projects, such as governance, community engagement, and documentation quality.
 
 ---
 
 ## ✨ **Key Features**
 1. **Repository Extraction**:
    - Automatically fetches specified root-level files from GitHub repositories.
-   - Organizes the data by programming language for easier processing.
-   - Allows filtering based on predefined patterns (e.g., `README`, `CODE_OF_CONDUCT`).
+   - Organizes extracted data by programming language.
+   - Supports configurable file patterns (e.g., `README`, `CODE_OF_CONDUCT`).
 
 2. **Text Classification**:
-   - Performs in-depth analysis of text files using a classification pipeline.
-   - Utilizes prompts for specific dimensions, such as governance, user testing, and non-coding contributors.
-   - Outputs structured JSON results for easy interpretation.
+   - Uses AI-powered prompts to analyze extracted files.
+   - Identifies governance structures, user testing mentions, and non-coding contributions.
+   - Generates structured JSON results for further analysis.
 
 3. **Modular Design**:
-   - **Extractor**: Responsible for fetching and organizing repository data.
+   - **Extractor**: Fetches and organizes repository data.
    - **Classifier**: Processes extracted files and applies structured prompts to analyze content.
+   - **Main Runner**: Automates execution of both modules.
 
-5. **Logging and Validation**:
-   - Comprehensive logging ensures that all processes are tracked for debugging and validation.
-   - Includes functionality for random file sampling during validation phases.
+4. **Logging and Validation**:
+   - Logs all operations in dedicated log files.
+   - Includes validation features for sampling and debugging.
 
 ---
+
 
 ## 🔍 **Extractor**
 
