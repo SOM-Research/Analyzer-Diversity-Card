@@ -86,7 +86,9 @@ The **Extractor** module automates the retrieval of specific root-level files fr
 
 ### 🌟 Key Benefits
 ✅ Automates the retrieval of essential documentation across multiple repositories.
+
 ✅ Organizes extracted data efficiently for structured analysis.
+
 ✅ Provides detailed logs for traceability and debugging.
 
 --- 
