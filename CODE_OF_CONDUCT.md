@@ -9,7 +9,7 @@ We pledge to act and interact in ways that contribute to an open, welcoming, div
 ## Need Help?
 If ANY behavior makes you uncomfortable, or you believe it breaches the intent of this code of conduct, please contact a project maintainer:
 
-* [Javier Cánovas](https://github.com/jlcanovas/) (he/him)
+* [Sergio Cobos](https://github.com/CobosDS) (he/him)
 
 ---
 
