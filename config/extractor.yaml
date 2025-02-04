@@ -1,0 +1,22 @@
+# Configuration file for GitHub Root Files Downloader
+# ==============================================
+# Contains API settings, file patterns, and output directory.
+
+BASE_OUTPUT_DIR: "data/root_files"
+LOG_FILE: "logs/repositories_extractor.log"
+REPOSITORIES_FILE: "config/repositories.json"
+
+TARGET_FILES:
+  - "readme.md"
+  - "readme.rst"
+  - "contributing"
+  - "code_of_conduct"
+  - "governance"
+  - "codeowners"
+  - "community"
+  - "support"
+  - "security"
+  - "code-of-conduct"
+
+github:
+  token_env: "CRAWLER_ETHOSS"
