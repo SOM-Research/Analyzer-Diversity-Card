@@ -1,0 +1,18 @@
+# Configuration file for GitHub Contribution Classifier
+# =====================================================
+# This file defines all configurable settings for the text classification script.
+# It includes paths, language settings, logging configuration, and OpenAI API details.
+
+# Base directory containing extracted text files grouped by language
+ROOT_FOLDER: "data/root_files"
+
+# Directory where classification results will be saved
+CLASSIFICATION_FOLDER: "data/classification"
+
+# Path to store logs
+LOG_FILE: "logs/classifier.log"
+
+# OpenAI API Configuration
+OPENAI:
+  api_key_env: "OPENAI_API_KEY"
+

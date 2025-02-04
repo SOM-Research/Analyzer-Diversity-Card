@@ -102,10 +102,12 @@ Examples:
 NON_CODING_PROMPT = """
 Analyze the following text and respond in JSON format:
 
-1. Does it **explicit** mention non-coding contributors (such as Issue reporters, Advocates, Community managers, Documentors, or Translators)? (yes/no)
-2. Are any roles of non-coding contributors explained? (yes/no)
-   If yes, list the roles (e.g., Issue reporters, Advocates, Community managers, Documentors, or Translators).
+  1. Does it **explicitly** mention non-coding contributors (such as Issue reporters, Advocates, Community managers, Documentors, or Translators)? (yes/no)
+    - **Note**: Generic terms like "contributors" do not qualify. The mention must clearly identify specific roles such as those listed above.
 
+  2. Are any roles of non-coding contributors explained? (yes/no)
+    If yes, list the roles (e.g., Issue reporters, Advocates, Community managers, Documentors, or Translators).
+    
 Output format:
 {
   "mention_non_coding_contributors": "yes/no",
@@ -234,66 +236,89 @@ Examples:
 DEPLOYMENT_CONTEXT_PROMPT = """
 Analyze the following text and respond in JSON format:
 
-1. Does the documentation mention any specific use case? (yes/no)
-   e.g., Specific use cases: "Servers as a helper for students in schools."
-2. Does the documentation mention any specific target population? (yes/no)
-   Target population refers to a defined group of users such as "students in schools," "teachers," "engineers," or "healthcare workers."
-3. Does the documentation mention if the software is adapted to a specific population? (yes/no)
-   Adaptation refers to adjustments made for specific populations, such as disabled users (e.g., blind, deaf), cultural or linguistic constraints (e.g., Catalan language support), or specific professional groups.
+1. Does the documentation **explicitly** mention any specific use case? (yes/no)  
+   A specific use case refers to a clearly stated example of how the software is intended to be used (e.g., "Servers for school management systems", ...).  
+   - If yes, list the specific use cases explicitly mentioned in the text.
+
+2. Does the documentation **explicitly** mention any specific target population? (yes/no)  
+   A target population refers to a clearly stated group of users for whom the software is designed (e.g., "healthcare workers,"  "students in schools", ...).  
+   - **Do not infer or assume the target population** based on the software's features or technical focus. Only consider populations explicitly named in the text.
+   - If yes, list the specific target populations explicitly mentioned in the text.
+
+3. Does the documentation explicitly mention if the software is adapted to a specific population? (yes/no)
+   Adaptation refers to clearly stated adjustments made to accommodate the needs of specific groups of people, such as linguistic groups (e.g., support for Catalan speakers), professional groups (e.g., tailored tools for teachers), or people with specific accessibility needs (e.g., blind or deaf users).
+   - Do not include general technical features or inferred adaptations. Only consider explicit mentions of adjustments for particular populations.
+   - If yes, list the specific adaptations made for the identified groups.
 
 Output format:
 {
   "mention_specific_use_case": "yes/no",
+  "specific_use_cases": [list of specific use cases or empty array],
   "mention_target_population": "yes/no",
-  "mention_specific_adaptation": "yes/no"
+  "specific_target_populations": [list of specific target populations or empty array],
+  "mention_specific_adaptation": "yes/no",
+  "specific_adaptations": [list of specific adaptations or empty array]
 }
 
 Examples:
 
-1. Input text: "This software is designed to help students in schools complete their assignments efficiently."
+1. Input text: "This software does resumes and is designed to help teachers and students in schools complete their assignments efficiently."
    Output:
    {
      "mention_specific_use_case": "yes",
+     "specific_use_cases": ["create resumes"],
      "mention_target_population": "yes",
-     "mention_specific_adaptation": "no"
+     "specific_target_populations": ["teachers", "students in schools"],
+     "mention_specific_adaptation": "no",
+     "specific_adaptations": []
    }
 
 2. Input text: "The website is adapted to ensure visually impaired users can navigate easily."
    Output:
    {
      "mention_specific_use_case": "no",
+     "specific_use_cases": [],
      "mention_target_population": "no",
-     "mention_specific_adaptation": "yes"
+     "specific_target_populations": [],
+     "mention_specific_adaptation": "yes",
+     "specific_adaptations": ["adapted to ensure visually impaired users can navigate easily"]
    }
 
-
-3. Input text: "The documentation does not specify any particular use case, target population, or adaptation for the audience."
+3. Input text: "This app is designed for children and has been adapted to include larger text for easier reading."
    Output:
    {
      "mention_specific_use_case": "no",
-     "mention_target_population": "no",
-     "mention_specific_adaptation": "no"
+     "specific_use_cases": [],
+     "mention_target_population": "yes",
+     "specific_target_populations": ["children"],
+     "mention_specific_adaptation": "yes",
+     "specific_adaptations": ["adapted to include larger text for easier reading"]
    }
 
-4. Input text: "This app is designed for children and has been adapted to include larger text for easier reading."
+4. Input text: "The software is designed to report issues, help with coding, and is intended for new developers. The software supports Catalan speakers and is specifically adapted for users with visual impairments."
    Output:
    {
      "mention_specific_use_case": "yes",
+     "specific_use_cases": ["report issues", "help with coding"],
      "mention_target_population": "yes",
-     "mention_specific_adaptation": "yes"
+     "specific_target_populations": ["new developers"],
+     "mention_specific_adaptation": "yes",
+     "specific_adaptations": ["adapted for Catalan speakers", "adapted for users with visual impairments"]
    }
 
-5. Input text: "The software supports Catalan speakers and is specifically adapted for users with visual impairments."
+5. Input text: "This software is specifically designed for healthcare professionals working in emergency settings."
    Output:
    {
      "mention_specific_use_case": "no",
+     "specific_use_cases": [],
      "mention_target_population": "yes",
-     "mention_specific_adaptation": "yes"
+     "specific_target_populations": ["healthcare professionals"],
+     "mention_specific_adaptation": "no",
+     "specific_adaptations": []
    }
 
-&. Input text: 
+6. Input text:
 """
-
 
 GOVERNANCE_PARTICIPANTS_PROMPT = """
 Analyze the following text and respond in JSON format:

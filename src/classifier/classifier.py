@@ -1,62 +1,119 @@
 """
-Text File Processor with OpenAI Integration
-===========================================
+GitHub Root Files Classifier
+============================
 
 Description:
 ------------
-This script processes text files for multiple programming languages, analyzing 
-their content using predefined prompts with OpenAI's GPT model. It organizes 
-the results and saves them in structured JSON files for each language.
+This script processes root-level files extracted from GitHub repositories using OpenAI's GPT model. 
+It analyzes specific files (e.g., README, CONTRIBUTING, CODE_OF_CONDUCT) and classifies their content 
+based on predefined prompts.
 
-Key Features:
--------------
-1. **File Selection**: Randomly selects a specified number of text files for each language.
-2. **Dynamic Prompt Generation**: Creates tailored prompts for different analytical contexts.
-3. **OpenAI API Integration**: Leverages GPT-4o-mini for analyzing file content.
-4. **Result Storage**: Saves analysis results in JSON files, organized by language.
-5. **Robust Error Handling**: Handles missing API keys, empty files, and processing errors gracefully.
-6. **Environment Configuration**:
-   - `.env`: Stores the OpenAI API key.
-   - `config.py`: Contains global settings such as root directories, file counts, and language definitions.
+Features:
+---------
+- **Automatic Language Detection**: Dynamically scans folders in `ROOT_FOLDER` to detect available programming languages.
+- **AI-Powered File Analysis**: Uses OpenAI's API to process and classify root-level documentation files.
+- **Structured JSON Output**: Stores classification results in organized directories based on programming language.
+- **Configurable Settings**: 
+  - `config/classifier.yaml`: Defines paths, API credentials, and logging settings.
+  - `prompts.py`: Stores prompt templates for analysis.
+- **Error Handling and Logging**: Logs process details and errors in a dedicated log file.
 """
 import os
-import random
 import json
 import re
+import yaml
+import logging
 from openai import OpenAI
-from dotenv import load_dotenv
-from config import ROOT_FOLDER, LANGUAGES, FILES_PER_LANGUAGE, CLASSIFICATION_FOLDER
-from prompt import SYSTEM_PROMPT, DEVELOPMENT_TEAM_PROMPT, NON_CODING_PROMPT, USER_TESTING_PROMPT, DEPLOYMENT_CONTEXT_PROMPT, GOVERNANCE_PARTICIPANTS_PROMPT
+from pathlib import Path
+from datetime import datetime
+from prompts import (
+    SYSTEM_PROMPT,
+    DEVELOPMENT_TEAM_PROMPT,
+    NON_CODING_PROMPT,
+    USER_TESTING_PROMPT,
+    DEPLOYMENT_CONTEXT_PROMPT,
+    GOVERNANCE_PARTICIPANTS_PROMPT
+)
 
+# ==========================
+# CONFIGURATION & LOGGING
+# ==========================
 
-def select_random_files(root_folder, languages, files_per_language):
+def load_config():
     """
-    Selects random text files from subdirectories of a root folder for specified programming languages.
+    Loads configuration from the YAML file.
+
+    Returns:
+        dict: Parsed configuration dictionary.
+    """
+    config_path = Path("config/classifier.yaml")
+    if not config_path.exists():
+        raise FileNotFoundError(f"Configuration file not found: {config_path}")
+
+    with open(config_path, "r", encoding="utf-8") as file:
+        return yaml.safe_load(file)
+
+
+# Load configuration from YAML
+config = load_config()
+
+# Global variables from YAML
+ROOT_FOLDER = config["ROOT_FOLDER"]
+CLASSIFICATION_FOLDER = config["CLASSIFICATION_FOLDER"]
+LOG_FILE = config["LOG_FILE"]
+
+# Ensure necessary directories exist
+os.makedirs(CLASSIFICATION_FOLDER, exist_ok=True)
+os.makedirs(os.path.dirname(LOG_FILE), exist_ok=True)
+
+# Configure logging
+logging.basicConfig(
+    filename=LOG_FILE,
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
+
+# OpenAI API Key from environment
+API_KEY = os.getenv(config["OPENAI"]["api_key_env"])
+if not API_KEY:
+    raise EnvironmentError(f"Environment variable '{config['github']['token_env']}' is not set.")
+
+# OpenAI Client
+client = OpenAI(api_key=API_KEY)
+
+
+# ==========================
+# CORE FUNCTIONS
+# ==========================
+
+def select_all_files(root_folder):
+    """
+    Automatically detects programming language folders and retrieves all text files.
 
     Args:
         root_folder (str): The base directory containing subdirectories for each language.
-        languages (list): A list of language names corresponding to subdirectory names.
-        files_per_language (int): The number of files to randomly select per language.
 
     Returns:
-        dict: A dictionary where keys are language names and values are lists of randomly selected file paths.
+        dict: A dictionary where keys are detected language names and values are lists of file paths.
     """
     selected_files = {}
+    if not os.path.exists(root_folder):
+        logging.warning(f"Root folder not found: {root_folder}")
+        return selected_files
+
+    # Get all subdirectories in root_folder
+    languages = [d for d in os.listdir(root_folder) if os.path.isdir(os.path.join(root_folder, d))]
+
     for language in languages:
         language_path = os.path.join(root_folder, language)
-        # Check if the language folder exists and is a directory
-        if os.path.exists(language_path) and os.path.isdir(language_path):
-            # Get all text files in the folder
-            all_files = [
-                os.path.join(language_path, f)
-                for f in os.listdir(language_path)
-                if os.path.isfile(os.path.join(language_path, f)) and f.endswith(".txt")
-            ]
-            # Randomly select files, up to the specified limit
-            selected_files[language] = random.sample(all_files, min(len(all_files), files_per_language))
-        else:
-            print(f"Language folder not found or is empty: {language_path}")
-            selected_files[language] = []  # If folder doesn't exist, set an empty list
+        all_files = [
+            os.path.join(language_path, f)
+            for f in os.listdir(language_path)
+            if os.path.isfile(os.path.join(language_path, f)) and f.endswith(".txt")
+        ]
+        selected_files[language] = all_files if all_files else []
+    
     return selected_files
 
 
@@ -74,8 +131,8 @@ def read_input_file(file_path):
         with open(file_path, "r", encoding="utf-8") as file:
             return file.read()
     except Exception as e:
-        print(f"Error reading the file: {e}")
-        return ""  # Return an empty string if there's an error
+        logging.error(f"Error reading the file {file_path}: {e}")
+        return ""
 
 
 def save_output_to_json(output_data, input_file_path, language):
@@ -91,37 +148,21 @@ def save_output_to_json(output_data, input_file_path, language):
         None
     """
     try:
-        # Create the classification folder by language if it doesn't exist
         output_folder = os.path.join(CLASSIFICATION_FOLDER, language)
         os.makedirs(output_folder, exist_ok=True)
 
-        # Generate the output file name
         base_name = os.path.basename(input_file_path)
         output_file_name = os.path.splitext(base_name)[0] + ".json"
         output_file_path = os.path.join(output_folder, output_file_name)
 
-        # Save the output data in JSON format
         with open(output_file_path, "w", encoding="utf-8") as json_file:
             json.dump(output_data, json_file, ensure_ascii=False, indent=4)
 
-        print(f"Output saved to {output_file_path}")
+        logging.info(f"Output saved to {output_file_path}")
     except Exception as e:
-        print(f"Error saving the output to JSON: {e}")
+        logging.error(f"Error saving the output to JSON: {e}")
 
-# Load variables from the .env file
-load_dotenv(override=True)
 
-# Get the API key from the environment variables
-api_key = os.getenv("OPENAI_API_KEY")
-
-# Raise an error if the API key is missing
-if not api_key:
-    raise ValueError("No API key found. Please set it in the '.env' file or as an environment variable.")
-
-# Create an OpenAI client using the API key
-client = OpenAI(api_key=api_key)
-
-# Function to process a text file
 def process_file(file_path):
     """
     Analyzes the content of a text file using predefined prompts and returns the results.
@@ -132,11 +173,10 @@ def process_file(file_path):
     Returns:
         dict: A dictionary containing the results for various analysis categories.
     """
-    # Read the content of the file
     input_text = read_input_file(file_path)
     if not input_text.strip():
-        print(f"Skipping empty file: {file_path}")
-        return {}  # Skip processing if the file is empty
+        logging.warning(f"Skipping empty file: {file_path}")
+        return {}
 
     # Create dynamic prompts for analysis
     development_team_prompt = f"{DEVELOPMENT_TEAM_PROMPT}\n\nText to analyze:\n{input_text}"
@@ -144,7 +184,6 @@ def process_file(file_path):
     user_testing_prompt = f"{USER_TESTING_PROMPT}\n\nText to analyze:\n{input_text}"
     deployment_context_prompt = f"{DEPLOYMENT_CONTEXT_PROMPT}\n\nText to analyze:\n{input_text}"
     governance_participants_prompt = f"{GOVERNANCE_PARTICIPANTS_PROMPT}\n\nText to analyze:\n{input_text}"
-
 
     def analyze(prompt, label):
         """
@@ -159,19 +198,17 @@ def process_file(file_path):
         """
         try:
             completion = client.chat.completions.create(
-                model="gpt-4o-mini",
+                model="gpt-4o-mini-2024-07-18",
                 messages=[
                     {"role": "system", "content": SYSTEM_PROMPT},
                     {"role": "user", "content": prompt}
                 ]
             )
-            # Extract JSON content from the model's response
             return json.loads(re.search(r"\{.*\}", completion.choices[0].message.content, re.DOTALL).group(0))
         except Exception as e:
-            print(f"Error processing {label} for file {file_path}: {e}")
+            logging.error(f"Error processing {label} for file {file_path}: {e}")
             return {}
 
-    # Return results for different analysis categories
     return {
         "development_team": analyze(development_team_prompt, "development_team"),
         "non_coding_contributors": analyze(non_coding_prompt, "non_coding_contributors"),
@@ -180,12 +217,23 @@ def process_file(file_path):
         "governance_participants": analyze(governance_participants_prompt, "governance_participants")
     }
 
-# Select random files for processing
-selected_files = select_random_files(ROOT_FOLDER, LANGUAGES, FILES_PER_LANGUAGE)
 
-# Process each selected file
-for language, files in selected_files.items():
-    for file_path in files:
-        print(f"Processing file: {file_path}")
-        output_data = process_file(file_path)
-        save_output_to_json(output_data, file_path, language)
+# ==========================
+# EXECUTION
+# ==========================
+
+if __name__ == "__main__":
+    start_time = datetime.now()
+    logging.info(f"Process started at: {start_time}")
+
+    selected_files = select_all_files(ROOT_FOLDER)
+
+    for language, files in selected_files.items():
+        for file_path in files:
+            logging.info(f"Processing file: {file_path}")
+            output_data = process_file(file_path)
+            save_output_to_json(output_data, file_path, language)
+
+    end_time = datetime.now()
+    logging.info(f"Process finished at: {end_time}")
+    logging.info(f"Total duration: {end_time - start_time}")
