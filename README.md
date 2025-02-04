@@ -92,57 +92,52 @@ The **Extractor** module automates the retrieval of specific root-level files fr
 ✅ Provides detailed logs for traceability and debugging.
 
 --- 
-## 🔍 **Classifier**
+## 🔍 Classifier
 
-### 📖 **Overview**
-The **Classifier** module is responsible for analyzing the content of extracted root files from GitHub repositories. Using advanced language models and predefined prompts, it performs a structured analysis of various dimensions such as governance, user testing, and non-coding contributors. The outputs are stored in JSON format, providing a clear and organized representation of the insights gained from the analysis.
+### 📖 Overview
+The **Classifier** module processes and analyzes extracted root files from GitHub repositories using AI-driven text classification. It applies structured prompts to assess various aspects of open-source project documentation, such as governance participation, non-coding contributions, and user testing. The classification results are stored in JSON format for easy interpretation and further analysis.
 
-
-### ⚙️ **How It Works**
+### ⚙️ How It Works
 1. **File Selection**:
-   - Files to be analyzed are selected either randomly (during validation) or by processing all files extracted in the `root_files` directory.
-   - The classifier supports multiple programming languages and handles files organized by language folders.
+   - The classifier automatically detects and processes files stored in `data/root_files/`.
+   - Files are organized by programming language, and all extracted files are processed systematically.
 
-2. **Prompts**:
-   - The analysis is guided by predefined prompts stored in the `prompt` folder.
-   - Each prompt is designed to extract specific information from the text, such as mentions of governance participants or non-coding contributors.
+2. **Prompt-Based Analysis**:
+   - The classification process is guided by predefined prompts stored in `config/prompts.yaml`.
+   - Each prompt is designed to extract specific information, such as governance structures, diversity indicators, and user testing considerations.
 
-3. **Analysis**:
-   - The classifier processes the text of each file and applies the corresponding prompts.
-   - Outputs are generated in JSON format, with details for each analyzed dimension.
+3. **AI Processing**:
+   - The classifier interacts with an AI language model to analyze the content of each file.
+   - The model's responses are parsed into structured JSON format, containing categorized insights.
 
 4. **Output Organization**:
-   - Results are stored in the `classification` directory, organized by language.
-   - Each file's output is saved as a `.json` file named after the input file.
+   - Classification results are stored in `data/classification/<language>/`.
+   - Each processed file generates a corresponding JSON output, named `<file_name>.json`.
 
+5. **Logging**:
+   - Execution details, including processed files and errors, are logged in `logs/classifier.log`.
 
+### 📂 Key Files
+- **`classifier.py`** → Main script for analyzing extracted files.
+- **`config/classifier.yaml`** → Configures classification settings (API authentication, output paths, prompts).
+- **`prompts.py`** → Contains predefined prompts for structured analysis.
 
-### 📂 **Key Files**
-- **`classifier.py`**: The main script for analyzing extracted files.
-- **`prompt.py`**: Contains predefined prompts for different analysis dimensions.
-- **`config.py`**: Configuration for the classifier, including output paths and language settings.
-
-
-
-### 🛠️ **Usage Instructions**
-1. **Prepare the Environment**:
-   - Ensure your OpenAI API key is set in the `.env` file as `OPENAI_API_KEY`.
-   - Verify that the `root_files` directory contains extracted files organized by language.
+### 🛠️ Usage Instructions
+1. **Prepare Configuration**:
+   - Ensure `config/classifier.yaml` is correctly set up with API credentials and classification parameters.
+   - Verify that the `data/root_files/` directory contains extracted files organized by language.
 
 2. **Run the Classifier**:
-   Execute the classifier script to analyze the extracted files:
+   Execute the classifier script to analyze extracted files:
    ```bash
    python src/classifier/classifier.py
    ```
 
 3. **Output**:
-   - Results are saved in the `data/classification` directory, organized by language.
-   - Each result is stored as a JSON file corresponding to the input file name.
+   - Processed results are stored in `data/classification/<language>/`.
+   - Log file is available in `logs/classifier.log` for debugging and tracking the classification process.
 
-
-
-### 📊 **Example Output**
-
+### 📊 Example Output
 ```json
 {
   "development_team": {
@@ -175,9 +170,13 @@ The **Classifier** module is responsible for analyzing the content of extracted 
   }
 }
 ```
-### 🌟 **Key Benefits**
-- Provides a structured analysis of open-source project files.
-- Uses advanced language models for nuanced insights.
-- Outputs JSON files, making it easy to integrate with other systems or dashboards.
 
----
+### 🌟 Key Benefits
+✅ Provides structured analysis of open-source project documentation.
+
+✅ Uses AI-driven classification for deeper insights.
+
+✅ Outputs JSON files for seamless integration with other tools or dashboards.
+
+✅ Comprehensive logging ensures transparency and debugging support.
+
