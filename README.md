@@ -86,7 +86,6 @@ This will:
 - Check logs for any errors or missing configurations.
 - Modify `repositories.json` to include or exclude repositories as needed.
 
-By following these steps, you will successfully set up and run the **Diversity Card Analyzer** pipeline for automated extraction and classification of GitHub repository files.
 ---
 ## 🔍 Extractor
 
