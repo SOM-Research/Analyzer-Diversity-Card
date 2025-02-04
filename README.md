@@ -70,7 +70,6 @@ The **Extractor** module automates the retrieval of specific root-level files fr
        "repos": [
          { "owner": "OWNER_NAME", "name": "REPO_NAME", "language": "LANGUAGE" },
          { "owner": "OWNER_NAME", "name": "REPO_NAME", "language": "LANGUAGE" },
-         ...
        ]
      }
      ```
