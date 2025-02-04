@@ -31,6 +31,63 @@ This tool is particularly useful for understanding various aspects of open-sourc
 
 ---
 
+## 🚀 Setup & Execution
+
+### 📖 Overview
+This section guides you through setting up the environment, installing dependencies, and executing the **Diversity Card Analyzer** pipeline, which includes both extraction and classification of GitHub repository files.
+
+### 🛠️ Environment Setup
+1. **Create a Virtual Environment** (Recommended):
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On macOS/Linux
+   venv\Scripts\activate  # On Windows
+   ```
+
+2. **Install Dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. **Modify Configuration Files**:
+   - **Extractor Configuration:**
+     - Update `config/extractor.yaml` with your GitHub API token and extraction parameters.
+   - **Classifier Configuration:**
+     - Ensure `config/classifier.yaml` contains valid API credentials and classification settings.
+   - **Repositories List:**
+     - Add target repositories to `repositories.json`.
+
+### ▶️ Running the Full Pipeline
+Once the setup is complete, execute the **main script** to run both extractor and classifier sequentially:
+
+```bash
+python main.py
+```
+
+This will:
+1. **Extract files** from GitHub repositories and store them in `data/root_files/`.
+2. **Classify extracted files** using predefined prompts and save the output in `data/classification/`.
+
+### 📂 Key Files
+- **`requirements.txt`** → Lists all required dependencies.
+- **`config/extractor.yaml`** → Configuration for repository extraction.
+- **`config/classifier.yaml`** → Configuration for text classification.
+- **`repositories.json`** → Defines repositories to be processed.
+- **`main.py`** → Orchestrates the execution of extractor and classifier.
+
+### 📊 Logs & Debugging
+- Execution logs are stored in `logs/main.log`.
+- Each module has its own logs:
+  - Extractor → `logs/extractor.log`
+  - Classifier → `logs/classifier.log`
+
+### ✅ Final Notes
+- Ensure all required API tokens are set in the configuration files.
+- Check logs for any errors or missing configurations.
+- Modify `repositories.json` to include or exclude repositories as needed.
+
+By following these steps, you will successfully set up and run the **Diversity Card Analyzer** pipeline for automated extraction and classification of GitHub repository files.
+---
 ## 🔍 Extractor
 
 ### 📖 Overview
