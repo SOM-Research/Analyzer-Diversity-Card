@@ -11,10 +11,10 @@ and stores the results locally.
 
 Features:
 ---------
-- **Configurable Target Files**: Downloads files that match specified patterns (e.g., "readme", "code_of_conduct").
-- **Organized Storage**: Groups files into directories based on the repository's primary programming language.
-- **Robust Error Handling**: Logs process details and errors to a dedicated log file.
-- **External Configuration**:
+- Configurable Target Files: Downloads files that match specified patterns (e.g., "readme", "code_of_conduct").
+- Organized Storage: Groups files into directories based on the repository's primary programming language.
+- Robust Error Handling: Logs process details and errors to a dedicated log file.
+- External Configuration:
   - `config/extractor.yaml`: Defines API credentials, file patterns, output directories, and logging settings.
   - `config/repositories.json`: Specifies repositories to process, including owner, name, and language.
 """
