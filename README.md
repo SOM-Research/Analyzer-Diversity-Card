@@ -31,77 +31,64 @@ This tool is particularly useful for understanding various aspects of open-sourc
 
 ---
 
+## 🔍 Extractor
 
-## 🔍 **Extractor**
+### 📖 Overview
+The **Extractor** module automates the retrieval of specific root-level files from GitHub repositories. These files, such as `README`, `CONTRIBUTING`, and `CODE_OF_CONDUCT`, provide essential insights into the structure, guidelines, and governance of open-source projects. Extracted files are categorized by programming language and stored locally for further analysis.
 
-### 📖 **Overview**
-The **Extractor** module is responsible for retrieving specific root-level files from GitHub repositories. These files, such as `README`, `CONTRIBUTING`, or `CODE_OF_CONDUCT`, provide valuable insights into the structure, guidelines, and governance of open-source projects. The extracted files are organized by programming language and stored locally for further analysis.
-
-
-
-### ⚙️ **How It Works**
+### ⚙️ How It Works
 1. **Configuration**:
-   - The `repositories.json` file contains a list of repositories to process, specifying the repository owner, name, and primary programming language.
-   - The `config.py` file defines global settings, including the output directory, target file patterns, and GitHub API token.
+   - The extraction process is configured through `config/extractor.yaml`, which defines:
+     - GitHub API authentication
+     - Target file patterns (e.g., `README.md`, `CODE_OF_CONDUCT.md`)
+     - Output directory structure
+   - `repositories.json` contains the list of repositories to be processed, specifying repository owner, name, and programming language.
 
 2. **Target File Matching**:
-   - The extractor identifies files in the root directory of a repository that match a predefined list of patterns (e.g., `readme`, `code_of_conduct`).
-   - Files are downloaded only if they meet these criteria.
+   - The extractor scans the root directory of each repository and identifies files that match predefined patterns.
+   - Only relevant files are downloaded to avoid unnecessary processing.
 
 3. **Data Organization**:
-   - Extracted files are stored in a directory structure organized by programming language (`data/root_files/<language>`).
-   - Each repository's files are combined into a single text file for easy processing (`<owner>_<repo>.txt`).
+   - Extracted files are stored in `data/root_files/<language>/`.
+   - Each repository’s files are combined into a single text file named `<owner>_<repo>.txt` to facilitate structured processing.
 
 4. **Logging**:
-   - Logs are maintained in `data/root_files/process_log.txt` to track the extraction process, including any errors or skipped files.
+   - Every extraction process is logged in `logs/extractor.log`.
+   - The log file contains details of processed repositories, extracted files, skipped files, and any errors encountered.
 
+### 📂 Key Files
+- **`repositories_extractor.py`** → Main script for extracting files from repositories.
+- **`config/extractor.yaml`** → Configures extraction settings (API authentication, file patterns, output paths).
+- **`repositories.json`** → Defines the list of repositories to be processed.
 
-
-### 📂 **Key Files**
-- **`extractor_repos.py`**: The main script for extracting repository files.
-- **`config.py`**: Contains the configuration for the extractor, including API headers and file patterns.
-- **`repositories.json`**: Defines the list of repositories to process.
-
-
-
-### 🛠️ **Usage Instructions**
+### 🛠️ Usage Instructions
 1. **Prepare Configuration**:
-   - Ensure your GitHub API token is set in the `.env` file as `DIVERSITY_CARD`.
-   - Define the list of repositories in `repositories.json` with the following structure:
+   - Ensure `config/extractor.yaml` is correctly set up with API credentials and extraction parameters.
+   - Define repositories in `repositories.json` with the following structure:
      ```json
      {
        "repos": [
          { "owner": "OWNER_NAME", "name": "REPO_NAME", "language": "LANGUAGE" },
-         { "owner": "OWNER_NAME", "name": "REPO_NAME", "language": "LANGUAGE" }
+         { "owner": "OWNER_NAME", "name": "REPO_NAME", "language": "LANGUAGE" },
+         ...
        ]
      }
      ```
 
 2. **Run the Extractor**:
-   Execute the extractor script to fetch and organize the repository files:
+   Execute the extractor script to fetch and organize repository files:
    ```bash
-   python src/extractor/extractor_repos.py
+   python src/extractor/repositories_extractor.py
    ```
 
 3. **Output**:
-   - Extracted files are stored in the `data/root_files/<language>` directory.
-   - Check `data/root_files/process_log.txt` for logs of the extraction process.
+   - Extracted files are stored in `data/root_files/<language>/`.
+   - Log file is available in `logs/extractor.log` for debugging and tracking the extraction process.
 
-
-### 📊 **Example Log Output**
-```
-2025-01-14 12:00:00 - Processing repository: microsoft/PowerToys (Language: C#)
-2025-01-14 12:00:01 - Added README.md to data/root_files/c#/microsoft_PowerToys.txt
-2025-01-14 12:00:02 - Skipping contributing.md in microsoft/PowerToys. Not a target file.
-2025-01-14 12:00:03 - Processing repository: facebook/react (Language: JavaScript)
-2025-01-14 12:00:04 - Added CODE_OF_CONDUCT.md to data/root_files/javascript/facebook_react.txt
-```
-The extractor ensures robustness by handling individual file errors without interrupting the overall process.
-
-### 🌟 **Key Benefits**
-- Automates the retrieval of essential files across multiple repositories.
-- Organizes data efficiently for downstream classification.
-- Provides detailed logs for traceability and debugging.
+### 🌟 Key Benefits
+✅ Automates the retrieval of essential documentation across multiple repositories.
+✅ Organizes extracted data efficiently for structured analysis.
+✅ Provides detailed logs for traceability and debugging.
 
 --- 
 ## 🔍 **Classifier**
